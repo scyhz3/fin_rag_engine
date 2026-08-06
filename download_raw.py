@@ -3,17 +3,9 @@ import os
 from datetime import date
 from pathlib import Path
 
+from finrag.companies import COMPANIES
 from finrag.ingestion.downloader import EdinetDownloader
 from finrag.ingestion.edinet_client import EdinetClient
-
-
-COMPANIES = {
-    "E00776": "信越化学工業株式会社",
-    "E02778": "ソフトバンクグループ株式会社",
-    "E02126": "三菱重工業株式会社",
-    "E02655": "株式会社サンリオ",
-    "E02497": "伊藤忠商事株式会社",
-}
 
 
 def parse_args() -> argparse.Namespace:
