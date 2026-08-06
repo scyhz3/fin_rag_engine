@@ -1,0 +1,21 @@
+[project]
+name = "fin-rag-engine"
+version = "0.1.0"
+description = "RAG backend for Japanese financial documents from EDINET"
+readme = "README.md"
+authors = [
+    { name = "zhanghousu", email = "1036746359@qq.com" }
+]
+requires-python = ">=3.9"
+dependencies = [
+    "beautifulsoup4",
+    "httpx",
+    "lxml",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.2,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "finrag"
