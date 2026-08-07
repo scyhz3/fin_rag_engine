@@ -1,3 +1,5 @@
+"""Download raw EDINET filings for the configured companies and date range."""
+
 import argparse
 import os
 from datetime import date
@@ -9,6 +11,11 @@ from finrag.ingestion.edinet_client import EdinetClient
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse optional start and end dates from the command line.
+
+    Returns:
+        Parsed command-line arguments.
+    """
     parser = argparse.ArgumentParser(description="Download raw EDINET filings.")
     parser.add_argument("start_date", nargs="?", type=date.fromisoformat)
     parser.add_argument("end_date", nargs="?", type=date.fromisoformat)
@@ -16,6 +23,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    """Download filings and print the directories saved during the run."""
     args = parse_args()
     end_date = args.end_date or date.today()
     start_date = args.start_date or end_date.replace(year=end_date.year - 5)
