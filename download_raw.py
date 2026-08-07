@@ -5,7 +5,7 @@ import os
 from datetime import date
 from pathlib import Path
 
-from finrag.companies import COMPANIES
+from finrag.type import COMPANIES
 from finrag.ingestion.downloader import EdinetDownloader
 from finrag.ingestion.edinet_client import EdinetClient
 

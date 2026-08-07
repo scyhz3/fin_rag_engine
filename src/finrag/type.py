@@ -8,3 +8,15 @@ COMPANIES = {
     "E02655": "株式会社サンリオ",
     "E02497": "伊藤忠商事株式会社",
 }
+
+DOCUMENT_TYPES = {
+    "120": "annual_securities_report",
+    "130": "annual_securities_report",
+}
+
+DEI_FIELDS = {
+    "CurrentFiscalYearStartDateDEI",
+    "CurrentFiscalYearEndDateDEI",
+    "EDINETCodeDEI",
+    "FilerNameInJapaneseDEI",
+}
