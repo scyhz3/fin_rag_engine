@@ -11,6 +11,8 @@
 - 保存済みのメタデータと XBRL ZIP から書類情報を識別します。
 - 原本と訂正報告書をまとめ、各報告書の最新バージョンだけを選択します。
 - Inline XBRL の本文ファイルから、順序と出典を保持したテキストを抽出します。
+- HTML の見出し階層を使い、本文を出典付きの章単位に構造化します。
+- 章の境界を保ちながら、本文を検索用の小さなチャンクに分割します。
 
 現在のダウンロード対象となる書類種別は次のとおりです。
 
@@ -29,15 +31,21 @@ fin_rag_engine/
 │   └── finrag/
 │       ├── __init__.py
 │       ├── type.py
-│       └── ingestion/
+│       ├── ingestion/
+│       │   ├── __init__.py
+│       │   ├── edinet_client.py
+│       │   ├── downloader.py
+│       │   ├── identifier.py
+│       │   ├── section_extractor.py
+│       │   └── xbrl_extractor.py
+│       └── processing/
 │           ├── __init__.py
-│           ├── edinet_client.py
-│           ├── downloader.py
-│           ├── identifier.py
-│           └── xbrl_extractor.py
+│           └── chunker.py
 ├── tests/
+│   ├── test_chunker.py
 │   ├── test_edinet.py
 │   ├── test_identifier.py
+│   ├── test_section_extractor.py
 │   └── test_xbrl_extractor.py
 └── data/
     └── raw/
@@ -55,9 +63,13 @@ fin_rag_engine/
 | `src/finrag/ingestion/edinet_client.py` | EDINET の書類一覧 API と書類取得 API をラップします。 |
 | `src/finrag/ingestion/downloader.py` | 対象書類を抽出し、メタデータ、ZIP、PDF を元データ用ディレクトリへ保存します。 |
 | `src/finrag/ingestion/identifier.py` | メタデータと XBRL ZIP から書類を識別し、原本と訂正報告書のうち最新バージョンを選択します。 |
+| `src/finrag/ingestion/section_extractor.py` | HTML 見出しの階層を保ちながら、XBRL 本文を章単位に構造化します。 |
 | `src/finrag/ingestion/xbrl_extractor.py` | Inline XBRL の本文から、元ファイルと順序を保持した可読テキストを抽出します。 |
+| `src/finrag/processing/chunker.py` | 章をまたがずに本文を分割し、検索用メタデータを持つチャンクを作成します。 |
+| `tests/test_chunker.py` | チャンクの長さ、重複部分、メタデータの引継ぎを検証します。 |
 | `tests/test_edinet.py` | EDINET ダウンロード機能のテストファイルです。現在、テストはまだ追加されていません。 |
 | `tests/test_identifier.py` | 書類識別と訂正報告書の選択ルールを検証します。 |
+| `tests/test_section_extractor.py` | 章の階層、本文の所属、順序を検証します。 |
 | `tests/test_xbrl_extractor.py` | XBRL 本文の選択、順序、テキスト整形を検証します。 |
 | `data/raw/edinet/` | ローカルの元データ用ディレクトリです。ダウンロードした内容は Git にコミットしません。 |
 
@@ -104,8 +116,7 @@ uv run python download_raw.py
 
 ## 現在の対象範囲
 
-現在のコードは元ファイルのダウンロード、書類識別、XBRL 本文のテキスト抽出を担当しています。次の機能はまだ実装されていません。
+現在のコードは元ファイルのダウンロード、書類識別、XBRL 本文の抽出、章構造化、検索用チャンクの作成を担当しています。次の機能はまだ実装されていません。
 
-- XBRL 本文の章構造化
-- テキスト分割、ベクトル化、RAG 検索
+- ベクトル化、ベクトルデータベース、RAG 検索
 - 一連の自動テスト
