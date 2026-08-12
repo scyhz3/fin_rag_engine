@@ -13,6 +13,7 @@
 - Inline XBRL の本文ファイルから、順序と出典を保持したテキストを抽出します。
 - HTML の見出し階層を使い、本文を出典付きの章単位に構造化します。
 - 章の境界を保ちながら、本文を検索用の小さなチャンクに分割します。
+- チャンクをバッチ単位で Embedding モデルへ渡し、ベクトル付きデータへ変換します。
 
 現在のダウンロード対象となる書類種別は次のとおりです。
 
@@ -40,10 +41,12 @@ fin_rag_engine/
 │       │   └── xbrl_extractor.py
 │       └── processing/
 │           ├── __init__.py
-│           └── chunker.py
+│           ├── chunker.py
+│           └── embedding.py
 ├── tests/
 │   ├── test_chunker.py
 │   ├── test_edinet.py
+│   ├── test_embedding.py
 │   ├── test_identifier.py
 │   ├── test_section_extractor.py
 │   └── test_xbrl_extractor.py
@@ -66,8 +69,10 @@ fin_rag_engine/
 | `src/finrag/ingestion/section_extractor.py` | HTML 見出しの階層を保ちながら、XBRL 本文を章単位に構造化します。 |
 | `src/finrag/ingestion/xbrl_extractor.py` | Inline XBRL の本文から、元ファイルと順序を保持した可読テキストを抽出します。 |
 | `src/finrag/processing/chunker.py` | 章をまたがずに本文を分割し、検索用メタデータを持つチャンクを作成します。 |
+| `src/finrag/processing/embedding.py` | Embedding モデルの共通インターフェースを定義し、チャンクをバッチ単位でベクトル化します。 |
 | `tests/test_chunker.py` | チャンクの長さ、重複部分、メタデータの引継ぎを検証します。 |
 | `tests/test_edinet.py` | EDINET ダウンロード機能のテストファイルです。現在、テストはまだ追加されていません。 |
+| `tests/test_embedding.py` | バッチ処理、元チャンクの保持、ベクトル次元の検証を行います。 |
 | `tests/test_identifier.py` | 書類識別と訂正報告書の選択ルールを検証します。 |
 | `tests/test_section_extractor.py` | 章の階層、本文の所属、順序を検証します。 |
 | `tests/test_xbrl_extractor.py` | XBRL 本文の選択、順序、テキスト整形を検証します。 |
@@ -116,7 +121,8 @@ uv run python download_raw.py
 
 ## 現在の対象範囲
 
-現在のコードは元ファイルのダウンロード、書類識別、XBRL 本文の抽出、章構造化、検索用チャンクの作成を担当しています。次の機能はまだ実装されていません。
+現在のコードは元ファイルのダウンロード、書類識別、XBRL 本文の抽出、章構造化、検索用チャンクの作成、Embedding 用データの生成を担当しています。次の機能はまだ実装されていません。
 
-- ベクトル化、ベクトルデータベース、RAG 検索
-- 一連の自動テスト
+- 実際の Embedding モデルとの接続
+- ベクトルデータベース、RAG 検索
+- CI による自動テスト実行
